@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "DevForge Toolkit & Blocker",
+  "version": "2.0",
+  "description": "Premium developer toolkit with 18+ tools and a built-in website blocker for focus mode.",
+  "action": {
+    "default_popup": "index.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  "permissions": [
+    "storage",
+    "declarativeNetRequest",
+    "notifications"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ]
+}
