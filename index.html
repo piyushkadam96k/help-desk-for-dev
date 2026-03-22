@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevForge | Developer Toolkit</title>
+    <meta name="description" content="A comprehensive, premium developer toolkit with JSON formatter, regex tester, password generator, and more.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .logo-text {
+            background-clip: text;
+            -webkit-background-clip: text;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon">⚡</span>
+                <span class="logo-text">DevForge</span>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <button class="nav-item active" data-tool="json">
+                <span class="nav-icon">{ }</span>
+                <span>JSON Formatter</span>
+            </button>
+            <button class="nav-item" data-tool="regex">
+                <span class="nav-icon">.*</span>
+                <span>Regex Tester</span>
+            </button>
+            <button class="nav-item" data-tool="password">
+                <span class="nav-icon">🔐</span>
+                <span>Password Gen</span>
+            </button>
+            <button class="nav-item" data-tool="base64">
+                <span class="nav-icon">⇄</span>
+                <span>Base64 Codec</span>
+            </button>
+            <button class="nav-item" data-tool="color">
+                <span class="nav-icon">🎨</span>
+                <span>Color Tools</span>
+            </button>
+            <button class="nav-item" data-tool="markdown">
+                <span class="nav-icon">M↓</span>
+                <span>Markdown Preview</span>
+            </button>
+            <button class="nav-item" data-tool="hash">
+                <span class="nav-icon">#</span>
+                <span>Hash Generator</span>
+            </button>
+            <button class="nav-item" data-tool="diff">
+                <span class="nav-icon">±</span>
+                <span>Text Diff</span>
+            </button>
+            <button class="nav-item" data-tool="lorem">
+                <span class="nav-icon">¶</span>
+                <span>Lorem Ipsum</span>
+            </button>
+            <button class="nav-item" data-tool="timestamp">
+                <span class="nav-icon">⏱</span>
+                <span>Timestamp</span>
+            </button>
+            <button class="nav-item" data-tool="jwt">
+                <span class="nav-icon">🔑</span>
+                <span>JWT Decoder</span>
+            </button>
+            <button class="nav-item" data-tool="url">
+                <span class="nav-icon">🔗</span>
+                <span>URL Codec</span>
+            </button>
+            <button class="nav-item" data-tool="sql">
+                <span class="nav-icon">📊</span>
+                <span>SQL Formatter</span>
+            </button>
+            <button class="nav-item" data-tool="cron">
+                <span class="nav-icon">⏰</span>
+                <span>Cron Parser</span>
+            </button>
+            <button class="nav-item" data-tool="uuid">
+                <span class="nav-icon">🆔</span>
+                <span>UUID Generator</span>
+            </button>
+            <button class="nav-item" data-tool="qr">
+                <span class="nav-icon">▣</span>
+                <span>QR Code Gen</span>
+            </button>
+            <button class="nav-item" data-tool="cssg">
+                <span class="nav-icon">✦</span>
+                <span>CSS Generator</span>
+            </button>
+            <button class="nav-item" data-tool="entities">
+                <span class="nav-icon">&lt;&gt;</span>
+                <span>HTML Entities</span>
+            </button>
+            <button class="nav-item" data-tool="blocker">
+                <span class="nav-icon">🛡️</span>
+                <span>Site Blocker</span>
+            </button>
+        </nav>
+        <div class="sidebar-footer">
+            <span class="version">v2.0 — 19 Tools ⚡</span>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="topbar">
+            <button class="menu-toggle" id="menu-toggle">☰</button>
+            <h2 class="page-title" id="page-title">JSON Formatter & Validator</h2>
+        </div>
+
+        <!-- JSON Formatter -->
+        <section class="tool-panel active" id="tool-json">
+            <div class="split-panel">
+                <div class="panel-col">
+                    <div class="panel-header">
+                        <span>Input</span>
+                        <div class="panel-actions">
+                            <button class="action-btn" onclick="pasteClipboard('json-input')">Paste</button>
+                            <button class="action-btn" onclick="clearField('json-input')">Clear</button>
+                        </div>
+                    </div>
+                    <textarea id="json-input" class="code-area" placeholder='Paste your JSON here...\n\n{"name": "DevForge", "version": 1.0}'></textarea>
+                </div>
+                <div class="panel-col">
+                    <div class="panel-header">
+                        <span>Output</span>
+                        <div class="panel-actions">
+                            <button class="action-btn primary" onclick="formatJSON()">Format</button>
+                            <button class="action-btn" onclick="minifyJSON()">Minify</button>
+                            <button class="action-btn" onclick="copyOutput('json-output')">Copy</button>
+                        </div>
+                    </div>
+                    <textarea id="json-output" class="code-area output" readonly placeholder="Formatted JSON will appear here..."></textarea>
+                </div>
+            </div>
+            <div class="status-bar" id="json-status"></div>
+        </section>
+
+        <!-- Regex Tester -->
+        <section class="tool-panel" id="tool-regex">
+            <div class="input-group">
+                <label>Regular Expression</label>
+                <div class="regex-input-row">
+                    <span class="regex-delim">/</span>
+                    <input type="text" id="regex-pattern" class="code-input" placeholder="your pattern here">
+                    <span class="regex-delim">/</span>
+                    <input type="text" id="regex-flags" class="code-input flag-input" value="g" placeholder="flags">
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Test String</label>
+                <textarea id="regex-test" class="code-area" placeholder="Enter your test string here..." oninput="testRegex()"></textarea>
+            </div>
+            <div class="input-group">
+                <label>Matches</label>
+                <div id="regex-matches" class="results-box">No matches yet</div>
+            </div>
+        </section>
+
+        <!-- Password Generator -->
+        <section class="tool-panel" id="tool-password">
+            <div class="password-display" id="password-display">Click Generate!</div>
+            <div class="password-strength" id="password-strength"></div>
+            <div class="option-grid">
+                <div class="option-item">
+                    <label>Length: <strong id="pw-length-val">20</strong></label>
+                    <input type="range" id="pw-length" min="6" max="64" value="20" oninput="updatePwLength()">
+                </div>
+                <div class="option-item">
+                    <label><input type="checkbox" id="pw-upper" checked> Uppercase (A-Z)</label>
+                </div>
+                <div class="option-item">
+                    <label><input type="checkbox" id="pw-lower" checked> Lowercase (a-z)</label>
+                </div>
+                <div class="option-item">
+                    <label><input type="checkbox" id="pw-numbers" checked> Numbers (0-9)</label>
+                </div>
+                <div class="option-item">
+                    <label><input type="checkbox" id="pw-symbols" checked> Symbols (!@#$...)</label>
+                </div>
+            </div>
+            <div class="btn-row">
+                <button class="action-btn primary large" onclick="generatePassword()">⚡ Generate Password</button>
+                <button class="action-btn large" onclick="copyText(document.getElementById('password-display').textContent)">Copy</button>
+            </div>
+            <div class="bulk-section">
+                <label>Bulk Generate: <input type="number" id="pw-bulk-count" value="5" min="1" max="50" class="code-input small-input"></label>
+                <button class="action-btn" onclick="bulkGenerate()">Generate Bulk</button>
+            </div>
+            <pre id="bulk-output" class="code-area output" style="min-height:80px;max-height:200px;display:none"></pre>
+        </section>
+
+        <!-- Base64 Codec -->
+        <section class="tool-panel" id="tool-base64">
+            <div class="split-panel">
+                <div class="panel-col">
+                    <div class="panel-header">
+                        <span>Text / Decoded</span>
+                        <div class="panel-actions">
+                            <button class="action-btn primary" onclick="encodeBase64()">Encode →</button>
+                        </div>
+                    </div>
+                    <textarea id="b64-text" class="code-area" placeholder="Enter text to encode..."></textarea>
+                </div>
+                <div class="panel-col">
+                    <div class="panel-header">
+                        <span>Base64 / Encoded</span>
+                        <div class="panel-actions">
+                            <button class="action-btn primary" onclick="decodeBase64()">← Decode</button>
+                            <button class="action-btn" onclick="copyOutput('b64-encoded')">Copy</button>
+                        </div>
+                    </div>
+                    <textarea id="b64-encoded" class="code-area" placeholder="Or paste Base64 to decode..."></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- Color Tools -->
+        <section class="tool-panel" id="tool-color">
+            <div class="color-top-row">
+                <div class="color-picker-wrap">
+                    <input type="color" id="color-picker" value="#6366f1">
+                    <span id="color-hex-label">#6366f1</span>
+                </div>
+                <div class="color-conversions" id="color-conversions">
+                    <div class="color-conv-item" onclick="copyText(this.querySelector('.conv-val').textContent)"><span class="conv-label">HEX</span><span class="conv-val" id="conv-hex">#6366f1</span></div>
+                    <div class="color-conv-item" onclick="copyText(this.querySelector('.conv-val').textContent)"><span class="conv-label">RGB</span><span class="conv-val" id="conv-rgb">rgb(99, 102, 241)</span></div>
+                    <div class="color-conv-item" onclick="copyText(this.querySelector('.conv-val').textContent)"><span class="conv-label">HSL</span><span class="conv-val" id="conv-hsl">hsl(239, 84%, 67%)</span></div>
+                </div>
+            </div>
+            <h3 style="margin:20px 0 12px;font-weight:500;">Generated Palette</h3>
+            <div class="palette-row" id="palette-row"></div>
+            <div class="btn-row" style="margin-top:16px">
+                <button class="action-btn primary" onclick="generatePalette()">🎨 Generate Harmony</button>
+                <button class="action-btn" onclick="randomColor()">Random</button>
+            </div>
+        </section>
+
+        <!-- Markdown Preview -->
+        <section class="tool-panel" id="tool-markdown">
+            <div class="split-panel">
+                <div class="panel-col">
+                    <div class="panel-header">
+                        <span>Markdown</span>
+                        <div class="panel-actions">
+                            <button class="action-btn" onclick="clearField('md-input')">Clear</button>
+                        </div>
+                    </div>
+                    <textarea id="md-input" class="code-area" placeholder="# Write markdown here..." oninput="renderMarkdown()"></textarea>
+                </div>
+                <div class="panel-col">
+                    <div class="panel-header"><span>Preview</span></div>
+                    <div id="md-preview" class="preview-area">
+                        <p style="color:var(--text-muted)">Preview will appear here...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hash Generator -->
+        <section class="tool-panel" id="tool-hash">
+            <div class="input-group">
+                <label>Text to Hash</label>
+                <textarea id="hash-input" class="code-area" placeholder="Enter text to generate hashes..." oninput="generateHashes()"></textarea>
+            </div>
+            <div class="hash-results" id="hash-results">
+                <div class="hash-item"><span class="hash-label">SHA-256</span><span class="hash-value" id="hash-sha256">—</span><button class="action-btn small" onclick="copyText(document.getElementById('hash-sha256').textContent)">Copy</button></div>
+                <div class="hash-item"><span class="hash-label">SHA-384</span><span class="hash-value" id="hash-sha384">—</span><button class="action-btn small" onclick="copyText(document.getElementById('hash-sha384').textContent)">Copy</button></div>
+                <div class="hash-item"><span class="hash-label">SHA-512</span><span class="hash-value" id="hash-sha512">—</span><button class="action-btn small" onclick="copyText(document.getElementById('hash-sha512').textContent)">Copy</button></div>
+            </div>
+        </section>
+
+        <!-- Text Diff -->
+        <section class="tool-panel" id="tool-diff">
+            <div class="split-panel">
+                <div class="panel-col">
+                    <div class="panel-header"><span>Original</span></div>
+                    <textarea id="diff-original" class="code-area" placeholder="Paste original text..."></textarea>
+                </div>
+                <div class="panel-col">
+                    <div class="panel-header"><span>Modified</span></div>
+                    <textarea id="diff-modified" class="code-area" placeholder="Paste modified text..."></textarea>
+                </div>
+            </div>
+            <div class="btn-row" style="margin-top:12px">
+                <button class="action-btn primary large" onclick="computeDiff()">Compare</button>
+            </div>
+            <div id="diff-output" class="diff-output"></div>
+        </section>
+
+        <!-- Lorem Ipsum -->
+        <section class="tool-panel" id="tool-lorem">
+            <div class="option-grid compact">
+                <div class="option-item">
+                    <label>Paragraphs: <strong id="lorem-count-val">3</strong></label>
+                    <input type="range" id="lorem-count" min="1" max="20" value="3" oninput="document.getElementById('lorem-count-val').textContent=this.value">
+                </div>
+                <div class="option-item">
+                    <label><input type="checkbox" id="lorem-html"> Wrap in &lt;p&gt; tags</label>
+                </div>
+            </div>
+            <div class="btn-row">
+                <button class="action-btn primary large" onclick="generateLorem()">Generate Lorem Ipsum</button>
+                <button class="action-btn large" onclick="copyOutput('lorem-output')">Copy</button>
+            </div>
+            <textarea id="lorem-output" class="code-area output" readonly style="min-height:250px" placeholder="Generated text will appear here..."></textarea>
+        </section>
+
+        <!-- Timestamp Converter -->
+        <section class="tool-panel" id="tool-timestamp">
+            <div class="timestamp-live">
+                <span class="ts-label">Current Unix Timestamp</span>
+                <span class="ts-value" id="live-timestamp"></span>
+            </div>
+            <div class="split-panel">
+                <div class="panel-col">
+                    <div class="panel-header"><span>Unix Timestamp → Date</span></div>
+                    <div class="input-group">
+                        <input type="text" id="ts-unix-input" class="code-input" placeholder="e.g. 1711108993">
+                        <button class="action-btn primary" onclick="unixToDate()" style="margin-top:8px">Convert</button>
+                    </div>
+                    <div id="ts-date-result" class="results-box">Enter a timestamp above</div>
+                </div>
+                <div class="panel-col">
+                    <div class="panel-header"><span>Date → Unix Timestamp</span></div>
+                    <div class="input-group">
+                        <input type="datetime-local" id="ts-date-input" class="code-input">
+                        <button class="action-btn primary" onclick="dateToUnix()" style="margin-top:8px">Convert</button>
+                    </div>
+                    <div id="ts-unix-result" class="results-box">Pick a date above</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- JWT Decoder -->
+        <section class="tool-panel" id="tool-jwt">
+            <div class="input-group">
+                <label>Paste JWT Token</label>
+                <textarea id="jwt-input" class="code-area" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." oninput="decodeJWT()"></textarea>
+            </div>
+            <div class="jwt-parts">
+                <div class="jwt-part">
+                    <div class="jwt-part-header" style="color:#ef4444">HEADER</div>
+                    <pre id="jwt-header" class="code-area output" style="min-height:80px">Paste a JWT above</pre>
+                </div>
+                <div class="jwt-part">
+                    <div class="jwt-part-header" style="color:#a855f7">PAYLOAD</div>
+                    <pre id="jwt-payload" class="code-area output" style="min-height:120px">—</pre>
+                </div>
+                <div class="jwt-part">
+                    <div class="jwt-part-header" style="color:#06b6d4">SIGNATURE</div>
+                    <pre id="jwt-signature" class="code-area output" style="min-height:40px">—</pre>
+                </div>
+            </div>
+            <div id="jwt-expiry" class="status-bar"></div>
+        </section>
+
+        <!-- URL Codec -->
+        <section class="tool-panel" id="tool-url">
+            <div class="split-panel">
+                <div class="panel-col">
+                    <div class="panel-header"><span>Decoded URL</span>
+                        <div class="panel-actions"><button class="action-btn primary" onclick="encodeURL()">Encode →</button></div>
+                    </div>
+                    <textarea id="url-decoded" class="code-area" placeholder="https://example.com/search?q=hello world&lang=en"></textarea>
+                </div>
+                <div class="panel-col">
+                    <div class="panel-header"><span>Encoded URL</span>
+                        <div class="panel-actions">
+                            <button class="action-btn primary" onclick="decodeURL()">← Decode</button>
+                            <button class="action-btn" onclick="copyOutput('url-encoded')">Copy</button>
+                        </div>
+                    </div>
+                    <textarea id="url-encoded" class="code-area" placeholder="https%3A%2F%2Fexample.com%2F..."></textarea>
+                </div>
+            </div>
+            <div class="input-group" style="margin-top:12px">
+                <label>URL Parser — Paste a URL to break it down</label>
+                <input type="text" id="url-parse-input" class="code-input" placeholder="https://example.com:8080/path?key=val#section" oninput="parseURL()">
+            </div>
+            <div id="url-parts" class="hash-results"></div>
+        </section>
+
+        <!-- SQL Formatter -->
+        <section class="tool-panel" id="tool-sql">
+            <div class="split-panel">
+                <div class="panel-col">
+                    <div class="panel-header"><span>SQL Input</span>
+                        <div class="panel-actions"><button class="action-btn" onclick="clearField('sql-input')">Clear</button></div>
+                    </div>
+                    <textarea id="sql-input" class="code-area" placeholder="SELECT u.id, u.name, o.total FROM users u JOIN orders o ON u.id = o.user_id WHERE o.total > 100 ORDER BY o.total DESC LIMIT 10;"></textarea>
+                </div>
+                <div class="panel-col">
+                    <div class="panel-header"><span>Formatted</span>
+                        <div class="panel-actions">
+                            <button class="action-btn primary" onclick="formatSQL()">Format</button>
+                            <button class="action-btn" onclick="copyOutput('sql-output')">Copy</button>
+                        </div>
+                    </div>
+                    <textarea id="sql-output" class="code-area output" readonly placeholder="Formatted SQL..."></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cron Parser -->
+        <section class="tool-panel" id="tool-cron">
+            <div class="input-group">
+                <label>Cron Expression</label>
+                <input type="text" id="cron-input" class="code-input" value="*/15 * * * *" oninput="parseCron()">
+            </div>
+            <div id="cron-result" class="results-box" style="font-size:1rem;line-height:2"></div>
+            <h3 style="margin:16px 0 8px;font-weight:500;font-size:.95rem">Quick Reference</h3>
+            <div class="cron-reference">
+                <div class="cron-ref-row"><span class="cron-field">Minute</span><span>0-59</span></div>
+                <div class="cron-ref-row"><span class="cron-field">Hour</span><span>0-23</span></div>
+                <div class="cron-ref-row"><span class="cron-field">Day of Month</span><span>1-31</span></div>
+                <div class="cron-ref-row"><span class="cron-field">Month</span><span>1-12</span></div>
+                <div class="cron-ref-row"><span class="cron-field">Day of Week</span><span>0-6 (Sun=0)</span></div>
+            </div>
+            <h3 style="margin:16px 0 8px;font-weight:500;font-size:.95rem">Presets</h3>
+            <div class="btn-row">
+                <button class="action-btn" onclick="setCron('* * * * *')">Every minute</button>
+                <button class="action-btn" onclick="setCron('0 * * * *')">Every hour</button>
+                <button class="action-btn" onclick="setCron('0 0 * * *')">Daily midnight</button>
+                <button class="action-btn" onclick="setCron('0 9 * * 1-5')">Weekdays 9am</button>
+                <button class="action-btn" onclick="setCron('0 0 1 * *')">Monthly</button>
+                <button class="action-btn" onclick="setCron('0 0 * * 0')">Weekly Sun</button>
+            </div>
+        </section>
+
+        <!-- UUID Generator -->
+        <section class="tool-panel" id="tool-uuid">
+            <div class="password-display" id="uuid-display" style="letter-spacing:1px">Click Generate!</div>
+            <div class="btn-row">
+                <button class="action-btn primary large" onclick="generateUUID()">⚡ Generate UUID v4</button>
+                <button class="action-btn large" onclick="copyText(document.getElementById('uuid-display').textContent)">Copy</button>
+            </div>
+            <div class="bulk-section">
+                <label>Bulk: <input type="number" id="uuid-bulk-count" value="10" min="1" max="100" class="code-input small-input"></label>
+                <button class="action-btn" onclick="bulkUUID()">Generate Bulk</button>
+                <button class="action-btn" onclick="copyOutput('uuid-bulk-output')">Copy All</button>
+            </div>
+            <textarea id="uuid-bulk-output" class="code-area output" readonly style="min-height:200px;display:none"></textarea>
+            <div class="input-group" style="margin-top:16px">
+                <label>Validate a UUID</label>
+                <input type="text" id="uuid-validate-input" class="code-input" placeholder="Paste UUID to validate..." oninput="validateUUID()">
+            </div>
+            <div id="uuid-validate-result" class="status-bar"></div>
+        </section>
+
+        <!-- QR Code Generator -->
+        <section class="tool-panel" id="tool-qr">
+            <div class="input-group">
+                <label>Text or URL</label>
+                <textarea id="qr-input" class="code-area" style="min-height:80px" placeholder="Enter text or URL to generate QR code..."></textarea>
+            </div>
+            <div class="option-grid compact">
+                <div class="option-item">
+                    <label>Size: <strong id="qr-size-val">200</strong>px</label>
+                    <input type="range" id="qr-size" min="100" max="500" value="200" oninput="document.getElementById('qr-size-val').textContent=this.value">
+                </div>
+            </div>
+            <div class="btn-row">
+                <button class="action-btn primary large" onclick="generateQR()">Generate QR Code</button>
+            </div>
+            <div id="qr-output" style="text-align:center;padding:20px"></div>
+        </section>
+
+        <!-- CSS Generator -->
+        <section class="tool-panel" id="tool-cssg">
+            <h3 style="font-weight:500;font-size:.95rem;margin-bottom:12px">Gradient Generator</h3>
+            <div class="css-preview" id="cssg-gradient-preview"></div>
+            <div class="option-grid compact">
+                <div class="option-item"><label>Color 1 <input type="color" id="cssg-c1" value="#6366f1" oninput="updateGradient()"></label></div>
+                <div class="option-item"><label>Color 2 <input type="color" id="cssg-c2" value="#ec4899" oninput="updateGradient()"></label></div>
+                <div class="option-item"><label>Angle: <strong id="cssg-angle-val">135</strong>°<input type="range" id="cssg-angle" min="0" max="360" value="135" oninput="document.getElementById('cssg-angle-val').textContent=this.value;updateGradient()"></label></div>
+            </div>
+            <div class="code-output-row">
+                <code id="cssg-gradient-code" class="code-output-block"></code>
+                <button class="action-btn small" onclick="copyText(document.getElementById('cssg-gradient-code').textContent)">Copy</button>
+            </div>
+            <h3 style="font-weight:500;font-size:.95rem;margin:20px 0 12px">Box Shadow Generator</h3>
+            <div class="css-preview" id="cssg-shadow-preview"><div class="shadow-box" id="shadow-box"></div></div>
+            <div class="option-grid compact">
+                <div class="option-item"><label>X: <strong id="cssg-sx-val">0</strong>px<input type="range" id="cssg-sx" min="-50" max="50" value="0" oninput="document.getElementById('cssg-sx-val').textContent=this.value;updateShadow()"></label></div>
+                <div class="option-item"><label>Y: <strong id="cssg-sy-val">10</strong>px<input type="range" id="cssg-sy" min="-50" max="50" value="10" oninput="document.getElementById('cssg-sy-val').textContent=this.value;updateShadow()"></label></div>
+                <div class="option-item"><label>Blur: <strong id="cssg-sb-val">30</strong>px<input type="range" id="cssg-sb" min="0" max="100" value="30" oninput="document.getElementById('cssg-sb-val').textContent=this.value;updateShadow()"></label></div>
+                <div class="option-item"><label>Spread: <strong id="cssg-ss-val">0</strong>px<input type="range" id="cssg-ss" min="-30" max="30" value="0" oninput="document.getElementById('cssg-ss-val').textContent=this.value;updateShadow()"></label></div>
+                <div class="option-item"><label>Color <input type="color" id="cssg-sc" value="#6366f1" oninput="updateShadow()"></label></div>
+                <div class="option-item"><label>Opacity: <strong id="cssg-so-val">40</strong>%<input type="range" id="cssg-so" min="0" max="100" value="40" oninput="document.getElementById('cssg-so-val').textContent=this.value;updateShadow()"></label></div>
+            </div>
+            <div class="code-output-row">
+                <code id="cssg-shadow-code" class="code-output-block"></code>
+                <button class="action-btn small" onclick="copyText(document.getElementById('cssg-shadow-code').textContent)">Copy</button>
+            </div>
+        </section>
+
+        <!-- HTML Entities -->
+        <section class="tool-panel" id="tool-entities">
+            <div class="split-panel">
+                <div class="panel-col">
+                    <div class="panel-header"><span>Text (Decoded)</span>
+                        <div class="panel-actions"><button class="action-btn primary" onclick="encodeEntities()">Encode →</button></div>
+                    </div>
+                    <textarea id="ent-decoded" class="code-area" placeholder='<div class="hello">Tom & Jerry</div>'></textarea>
+                </div>
+                <div class="panel-col">
+                    <div class="panel-header"><span>HTML Entities (Encoded)</span>
+                        <div class="panel-actions">
+                            <button class="action-btn primary" onclick="decodeEntities()">← Decode</button>
+                            <button class="action-btn" onclick="copyOutput('ent-encoded')">Copy</button>
+                        </div>
+                    </div>
+                    <textarea id="ent-encoded" class="code-area" placeholder="&amp;lt;div class=&amp;quot;hello&amp;quot;&amp;gt;"></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- Site Blocker -->
+        <section class="tool-panel" id="tool-blocker">
+            <div class="blocker-header">
+                <div class="blocker-status-card">
+                    <span class="status-label">Focus Mode</span>
+                    <label class="switch">
+                        <input type="checkbox" id="focus-toggle" onchange="toggleFocusMode()">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Add Website to Block</label>
+                <div class="regex-input-row">
+                    <input type="text" id="site-input" class="code-input" placeholder="e.g. facebook.com or youtube.com">
+                    <button class="action-btn primary" onclick="addBlockedSite()">Add</button>
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Blocked Websites</label>
+                <ul id="blocked-sites-list" class="blocked-list"></ul>
+            </div>
+            <div class="status-bar" id="blocker-status">
+                Add websites and enable Focus Mode to block them.
+            </div>
+        </section>
+    </main>
+
+    <script src="qrcode.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
